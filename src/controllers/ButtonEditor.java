@@ -24,6 +24,7 @@ import views.ParticipacionView;
 import views.PilotoView;
 
 /**
+ * Clase para crear botones en las celdas
  *
  * @author delga
  */
@@ -33,7 +34,7 @@ class ButtonEditor extends DefaultCellEditor {
     private String label;
     private boolean isPushed;
     int id;
-
+    
     public ButtonEditor(JCheckBox checkBox, int opc) {
         super(checkBox);
         button = new JButton();

@@ -9,23 +9,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
-import models.CarreraModel;
 import models.EscuderiaModel;
 import models.PilotoModel;
-import static utils.ConnectionDB.getConnection;
+import utils.ConnectionDB;
 
 /**
+ * Crud sobre tabla piloto
  *
  * @author delga
  */
-public class PilotoDAO {
+public class PilotoDAO extends ConnectionDB {
 
+    /**
+     * Encontrar piloto por codigo
+     *
+     * @param id
+     * @return ArrayList<PilotoModel>
+     */
     public ArrayList<PilotoModel> findPilotoByCodigo(int id) {
         ArrayList<PilotoModel> pilotos = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM piloto INNER JOIN escuderia ON piloto.codigo_escuderia_fk = escuderia.codigo_escuderia WHERE piloto.codigo_piloto = ? order by piloto.codigo_piloto asc;\n";
+            String sql = "SELECT * FROM piloto "
+                    + "INNER JOIN escuderia ON piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
+                    + "WHERE piloto.codigo_piloto = ? "
+                    + "order by piloto.codigo_piloto asc;\n";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
@@ -43,10 +51,19 @@ public class PilotoDAO {
         return pilotos;
     }
 
+    /**
+     * Encuentra piloto por nombre
+     *
+     * @param name
+     * @return ArrayList<PilotoModel>
+     */
     public ArrayList<PilotoModel> findPilotoByName(String name) {
         ArrayList<PilotoModel> pilotos = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM piloto INNER JOIN escuderia ON piloto.codigo_escuderia_fk = escuderia.codigo_escuderia where piloto.nombre like ? order by piloto.codigo_piloto asc;\n";
+            String sql = "SELECT * FROM piloto "
+                    + "INNER JOIN escuderia ON piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
+                    + "where piloto.nombre like ? "
+                    + "order by piloto.codigo_piloto asc;\n";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setString(1, "%" + name + "%");
             ResultSet result = statement.executeQuery();
@@ -64,10 +81,17 @@ public class PilotoDAO {
         return pilotos;
     }
 
+    /**
+     * Encuentra todos los pilotos
+     *
+     * @return ArrayList<PilotoModel>
+     */
     public ArrayList<PilotoModel> findAll() {
         ArrayList<PilotoModel> pilotos = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM piloto INNER JOIN escuderia ON piloto.codigo_escuderia_fk = escuderia.codigo_escuderia order by piloto.codigo_piloto asc;\n";
+            String sql = "SELECT * FROM piloto "
+                    + "INNER JOIN escuderia ON piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
+                    + "order by piloto.codigo_piloto asc;\n";
             ResultSet result = getConnection().createStatement().executeQuery(sql);
             while (result.next()) {
                 PilotoModel piloto = new PilotoModel(result.getInt(1),
@@ -83,9 +107,16 @@ public class PilotoDAO {
         return pilotos;
     }
 
+    /**
+     * Crea un piloto
+     *
+     * @param piloto
+     */
     public void createPiloto(PilotoModel piloto) {
         try {
-            String sql = "INSERT INTO piloto(codigo_piloto, nombre, millas_recorridas, combustible_usado, codigo_escuderia_fk) VALUES (?,?,?,?,?);";
+            String sql = "INSERT INTO piloto(codigo_piloto, nombre, "
+                    + "millas_recorridas, combustible_usado, codigo_escuderia_fk) "
+                    + "VALUES (?,?,?,?,?);";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, piloto.getCodigoPiloto());
             statement.setString(2, piloto.getNombre());
@@ -102,6 +133,11 @@ public class PilotoDAO {
         }
     }
 
+    /**
+     * Elimina un piloto
+     *
+     * @param id
+     */
     public void deletePilotoByCodigo(int id) {
         try {
             String sql = "DELETE FROM piloto WHERE codigo_piloto = ?;";
@@ -117,9 +153,16 @@ public class PilotoDAO {
         }
     }
 
+    /**
+     * Actualiza un piloto
+     *
+     * @param piloto
+     */
     public void updatePilotoById(PilotoModel piloto) {
         try {
-            String sql = "UPDATE piloto SET codigo_piloto= ?, nombre = ?, millas_recorridas = ?, combustible_usado = ?, codigo_escuderia_fk = ? WHERE codigo_piloto = ?;";
+            String sql = "UPDATE piloto SET codigo_piloto= ?, nombre = ?, "
+                    + "millas_recorridas = ?, combustible_usado = ?, "
+                    + "codigo_escuderia_fk = ? WHERE codigo_piloto = ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, piloto.getCodigoPiloto());
             statement.setString(2, piloto.getNombre());

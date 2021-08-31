@@ -192,7 +192,8 @@ public class EscuderiaView extends javax.swing.JFrame {
         if(escuderia == null){
             opc = -1;
         } 
-        escuderia = new EscuderiaModel(Integer.parseInt(codigoEscuderia.getText()),
+        escuderia = new EscuderiaModel(
+                    Integer.parseInt(codigoEscuderia.getText()),
                     nombreEscuderia.getText(), 
                     patrocinador.getText(),
                     Integer.parseInt(carrerasGanadas.getText()),

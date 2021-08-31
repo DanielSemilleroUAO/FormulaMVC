@@ -15,7 +15,8 @@ import models.ParticipacionModel;
 import models.PilotoModel;
 
 /**
- *
+ * Controlador de las vistas secundarias para guardar información
+ * 
  * @author delga
  */
 public class SaveDataController {
@@ -31,7 +32,13 @@ public class SaveDataController {
         participacionDAO = new ParticipacionDAO();
         pilotoDAO = new PilotoDAO();
     }
-
+    
+    /**
+     * Guardar o actualizar informacion escuderia
+     *  
+     * @param escuderia
+     * @param id 
+     */
     public void saveDataEscuderia(EscuderiaModel escuderia, int id) {
         if(id == -1){
             escuderiaDAO.createEscuderia(escuderia);
@@ -39,7 +46,12 @@ public class SaveDataController {
             escuderiaDAO.updateEscuderiaById(escuderia);
         }
     }
-
+    
+    /**
+     * Guardar o actualizar informacion Participacion
+     * 
+     * @param participacion 
+     */
     public void saveDataParticipacion(ParticipacionModel participacion) {
         if(participacion.getIdParticipacion() == -1){
             participacionDAO.createParticipacion(participacion);
@@ -47,7 +59,13 @@ public class SaveDataController {
             participacionDAO.updateParticipacionById(participacion);
         }
     }
-
+    
+    /**
+     * Guardar o actualizar informacion piloto
+     * 
+     * @param piloto
+     * @param id 
+     */
     public void saveDataPiloto(PilotoModel piloto, int id) {
         if (id == -1) {
             pilotoDAO.createPiloto(piloto);
@@ -57,6 +75,10 @@ public class SaveDataController {
 
     }
 
+    /**
+     * Guardar o actualizar informacion de la carrera
+     * @param carrera 
+     */
     public void saveDataCarrera(CarreraModel carrera) {
         if (carrera.getIdCarrera() == -1) {
             carreraDAO.createCarrera(carrera);

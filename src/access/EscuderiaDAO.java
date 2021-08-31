@@ -9,18 +9,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
-import models.CarreraModel;
 import models.EscuderiaModel;
-import static utils.ConnectionDB.getConnection;
+import utils.ConnectionDB;
 
 /**
+ * Crud sobre tabla escuderia
  *
  * @author delga
  */
-public class EscuderiaDAO {
+public class EscuderiaDAO extends ConnectionDB{
 
+    /**
+     * Encuentra la escuderia por el codigo
+     *
+     * @param id
+     * @return
+     */
     public ArrayList<EscuderiaModel> findEscuderiaByCodigo(int id) {
         ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
         try {
@@ -41,6 +46,12 @@ public class EscuderiaDAO {
         return escuderias;
     }
 
+    /**
+     * Encuentra la escuderia por su nombre
+     *
+     * @param name
+     * @return
+     */
     public ArrayList<EscuderiaModel> findEscuderiaByName(String name) {
         ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
         try {
@@ -61,6 +72,12 @@ public class EscuderiaDAO {
         return escuderias;
     }
 
+    /**
+     * Encuentra una escuderia por el nombre del patrocinador
+     *
+     * @param name
+     * @return
+     */
     public ArrayList<EscuderiaModel> findEscuderiaByPatrocinador(String name) {
         ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
         try {
@@ -81,6 +98,11 @@ public class EscuderiaDAO {
         return escuderias;
     }
 
+    /**
+     * Encuentra todas las escuderias
+     *
+     * @return
+     */
     public ArrayList<EscuderiaModel> findAll() {
         ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
         try {
@@ -100,9 +122,15 @@ public class EscuderiaDAO {
         return escuderias;
     }
 
+    /**
+     * Crea una escuderia
+     *
+     * @param escuderia
+     */
     public void createEscuderia(EscuderiaModel escuderia) {
         try {
-            String sql = "INSERT INTO escuderia(codigo_escuderia, nombre, patrocinador, carreras_ganadas, fecha_ingreso) VALUES (?,?,?,?,?);";
+            String sql = "INSERT INTO escuderia(codigo_escuderia, nombre, "
+                    + "patrocinador, carreras_ganadas, fecha_ingreso) VALUES (?,?,?,?,?);";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, escuderia.getCodigoEscuderia());
             statement.setString(2, escuderia.getNombre());
@@ -119,6 +147,11 @@ public class EscuderiaDAO {
         }
     }
 
+    /**
+     * Eliminar una escuderia
+     *
+     * @param id
+     */
     public void deleteEscuderiaByCodigo(int id) {
         try {
             String sql = "DELETE FROM escuderia WHERE codigo_escuderia = ?;";
@@ -134,9 +167,16 @@ public class EscuderiaDAO {
         }
     }
 
+    /**
+     * Actualiza una escuderia
+     *
+     * @param escuderia
+     */
     public void updateEscuderiaById(EscuderiaModel escuderia) {
         try {
-            String sql = "UPDATE escuderia SET codigo_escuderia = ?, nombre = ?, patrocinador = ?, carreras_ganadas = ?, fecha_ingreso = ? WHERE codigo_escuderia = ?;";
+            String sql = "UPDATE escuderia SET codigo_escuderia = ?, nombre = ?, "
+                    + "patrocinador = ?, carreras_ganadas = ?, fecha_ingreso = ? "
+                    + "WHERE codigo_escuderia = ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, escuderia.getCodigoEscuderia());
             statement.setString(2, escuderia.getNombre());

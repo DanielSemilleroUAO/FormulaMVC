@@ -9,24 +9,32 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import models.CarreraModel;
 import models.EscuderiaModel;
 import models.ParticipacionModel;
 import models.PilotoModel;
+import utils.ConnectionDB;
 import static utils.ConnectionDB.getConnection;
 
 /**
+ * Crud sobre tabla participacion
  *
  * @author delga
  */
-public class ParticipacionDAO {
+public class ParticipacionDAO extends ConnectionDB {
 
+    /**
+     * Encuentra una participacion por nombre del piloto
+     *
+     * @param nombre
+     * @return ArrayList<ParticipacionModel>
+     */
     public ArrayList<ParticipacionModel> findParticipacionByNamePiloto(String nombre) {
         ArrayList<ParticipacionModel> participaciones = new ArrayList<>();
         try {
-            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
+            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, "
+                    + "participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
                     + "inner join piloto on participacion.codigo_piloto_fk = piloto.codigo_piloto "
                     + "inner join carrera on participacion.id_carrera_fk = carrera.id_carrera "
                     + "inner join escuderia on piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
@@ -50,10 +58,17 @@ public class ParticipacionDAO {
         return participaciones;
     }
 
+    /**
+     * Encuentra una participacion por nombre de la carrera
+     *
+     * @param nombre
+     * @return ArrayList<ParticipacionModel>
+     */
     public ArrayList<ParticipacionModel> findParticipacionByNameCarrera(String nombre) {
         ArrayList<ParticipacionModel> participaciones = new ArrayList<>();
         try {
-            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
+            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, "
+                    + "participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
                     + "inner join piloto on participacion.codigo_piloto_fk = piloto.codigo_piloto "
                     + "inner join carrera on participacion.id_carrera_fk = carrera.id_carrera "
                     + "inner join escuderia on piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
@@ -77,10 +92,16 @@ public class ParticipacionDAO {
         return participaciones;
     }
 
+    /**
+     * Encuentra todas las participaciones
+     *
+     * @return ArrayList<ParticipacionModel>
+     */
     public ArrayList<ParticipacionModel> findAll() {
         ArrayList<ParticipacionModel> participaciones = new ArrayList<>();
         try {
-            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
+            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, "
+                    + "participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
                     + "inner join piloto on participacion.codigo_piloto_fk = piloto.codigo_piloto "
                     + "inner join carrera on participacion.id_carrera_fk = carrera.id_carrera "
                     + "inner join escuderia on piloto.codigo_escuderia_fk = escuderia.codigo_escuderia ORDER BY carrera.nombre asc;";
@@ -100,9 +121,15 @@ public class ParticipacionDAO {
         return participaciones;
     }
 
+    /**
+     * Crea una participacion
+     *
+     * @param participacion
+     */
     public void createParticipacion(ParticipacionModel participacion) {
         try {
-            String sql = "INSERT INTO participacion(fecha, posicion, codigo_piloto_fk, id_carrera_fk) VALUES (?,?,?,?);";
+            String sql = "INSERT INTO participacion(fecha, posicion, "
+                    + "codigo_piloto_fk, id_carrera_fk) VALUES (?,?,?,?);";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setString(1, participacion.getFecha());
             statement.setInt(2, participacion.getPosicion());
@@ -118,6 +145,11 @@ public class ParticipacionDAO {
         }
     }
 
+    /**
+     * Elimina una participacion
+     *
+     * @param id
+     */
     public void deleteParticipacionById(int id) {
         try {
             String sql = "DELETE FROM participacion WHERE id_participacion = ?;";
@@ -133,10 +165,16 @@ public class ParticipacionDAO {
         }
     }
 
+    /**
+     * Actualiza una participacion
+     *
+     * @param participacion
+     */
     public void updateParticipacionById(ParticipacionModel participacion) {
         try {
             System.out.println(participacion.getIdParticipacion());
-            String sql = "UPDATE participacion SET fecha = ?, posicion = ?, codigo_piloto_fk = ?, id_carrera_fk = ? WHERE id_participacion = ?;";
+            String sql = "UPDATE participacion SET fecha = ?, posicion = ?, "
+                    + "codigo_piloto_fk = ?, id_carrera_fk = ? WHERE id_participacion = ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setString(1, participacion.getFecha());
             statement.setInt(2, participacion.getPosicion());

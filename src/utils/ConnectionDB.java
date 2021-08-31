@@ -58,7 +58,4 @@ public abstract class ConnectionDB {
         return conn;
     }
     
-    public static void main(String[] args){
-        getConnection();
-    }
 }

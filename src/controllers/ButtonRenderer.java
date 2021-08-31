@@ -12,7 +12,8 @@ import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 
 /**
- *
+ * Clase para lograr mostrar los botones en la tabla
+ * 
  * @author delga
  */
 class ButtonRenderer extends JButton implements TableCellRenderer {

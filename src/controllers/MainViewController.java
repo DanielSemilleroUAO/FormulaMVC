@@ -22,6 +22,7 @@ import models.ParticipacionModel;
 import models.PilotoModel;
 
 /**
+ * Controlador de la vista principal
  *
  * @author delga
  */
@@ -44,6 +45,12 @@ public class MainViewController {
         pilotoDAO = new PilotoDAO();
     }
 
+    /**
+     * Cargar información a la tabla de acuerdo a tabla seleccionada
+     *
+     * @param tabla
+     * @param tablaSelected
+     */
     public void loadDataTabSelected(JTable tabla, int tablaSelected) {
 
         Object[] headers;
@@ -109,6 +116,14 @@ public class MainViewController {
         tabla.getColumn("Eliminar").setCellEditor(new ButtonEditor(new JCheckBox(), tablaSelected));
     }
 
+    /**
+     * Ejecuta los filtros y coloca información en la tabla
+     *
+     * @param tabla
+     * @param tablaSelected
+     * @param filterSelected
+     * @param dataSearch
+     */
     public void executeFilter(JTable tabla, int tablaSelected, int filterSelected, String dataSearch) {
 
         Object[] headers;
@@ -213,7 +228,13 @@ public class MainViewController {
                 "Eliminar").setCellEditor(new ButtonEditor(new JCheckBox(), tablaSelected));
 
     }
-
+    
+    /**
+     * Carga los datos al ComboBox para mostrar todas las escuderías disponibles
+     * 
+     * @param comboBox
+     * @return 
+     */
     public ArrayList<EscuderiaModel> loadComboBoxEscuderia(JComboBox comboBox) {
         ArrayList<EscuderiaModel> escuderias = escuderiaDAO.findAll();
         String[] data = new String[escuderias.size()];
@@ -223,7 +244,13 @@ public class MainViewController {
         comboBox.setModel(new DefaultComboBoxModel<>(data));
         return escuderias;
     }
-
+    
+    /**
+     * Carga los datos al ComboBox para mostrar todos los pilotos disponibles
+     * 
+     * @param comboBox
+     * @return 
+     */
     public ArrayList<PilotoModel> loadComboBoxPilotos(JComboBox comboBox) {
         ArrayList<PilotoModel> pilotos = pilotoDAO.findAll();
         String[] data = new String[pilotos.size()];
@@ -233,7 +260,13 @@ public class MainViewController {
         comboBox.setModel(new DefaultComboBoxModel<>(data));
         return pilotos;
     }
-
+    
+    /**
+     * Carga los datos al ComboBox para mostrar todos las carreras disponibles
+     * 
+     * @param comboBox
+     * @return 
+     */
     public ArrayList<CarreraModel> loadComboBoxCarreras(JComboBox comboBox) {
         ArrayList<CarreraModel> carreras = carreraDAO.findAll();
         String[] data = new String[carreras.size()];
