@@ -244,25 +244,4 @@ public class MainViewController {
         return carreras;
     }
 
-    public Object[][] filtersEscuderia() {
-        return null;
-    }
-
-    public Object[][] filtersPiloto() {
-        return null;
-    }
-
-    public Object[][] filtersParticipacion() {
-        return null;
-    }
-
-    public Object[][] filtersCarrera() {
-        return null;
-    }
-
-    public static void main(String[] args) {
-        MainViewController mainViewController = new MainViewController();
-
-    }
-
 }

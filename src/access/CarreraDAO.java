@@ -124,9 +124,5 @@ public class CarreraDAO extends ConnectionDB {
         }
     }
     
-    public static void main(String[] args) {
-        CarreraDAO carreraDAO = new CarreraDAO();
-        
-    }
     
 }

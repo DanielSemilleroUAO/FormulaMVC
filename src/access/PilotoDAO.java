@@ -137,13 +137,4 @@ public class PilotoDAO {
         }
     }
 
-    public static void main(String[] args) {
-        PilotoDAO pilotoDAO = new PilotoDAO();
-        ArrayList<PilotoModel> pilotos = pilotoDAO.findAll();
-        for (PilotoModel piloto : pilotos) {
-            System.out.println(pilotos.toString());
-        }
-
-    }
-
 }

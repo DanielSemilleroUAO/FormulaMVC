@@ -153,13 +153,4 @@ public class ParticipacionDAO {
         }
     }
 
-    public static void main(String[] args) {
-        EscuderiaDAO escuderiaDAO = new EscuderiaDAO();
-        ArrayList<EscuderiaModel> escuderias = escuderiaDAO.findAll();
-        for (EscuderiaModel escuderia : escuderias) {
-            System.out.println(escuderia.toString());
-        }
-
-    }
-
 }
