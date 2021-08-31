@@ -8,7 +8,10 @@ package views;
 import controllers.SaveDataController;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import models.CarreraModel;
 
 /**
@@ -195,23 +198,67 @@ public class CarreraView extends javax.swing.JFrame {
 
     private void guardarCarreraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarCarreraActionPerformed
         // TODO add your handling code here:
-        int id = 0;
-        
-        if (carrera == null) {
-            id = -1;
-        }else {
-            id = carrera.getIdCarrera();
+
+        try {
+            String nombreValidacion = "";
+            int capacidadValidacion = 0;
+            double nivelValidacion = 0.0;
+            
+            //Dejar solo numeros
+            nombreValidacion = nombre.getText().replaceAll("[\\PL]", "");
+            System.out.println(nombreValidacion);
+            nombre.setText(nombreValidacion);
+
+            if (nombreValidacion.equals("") || nombreValidacion.isEmpty()) {
+                throw new Exception("Por favor ingresar un nombre, el campo se encuentra sin diligenciar.");
+            }
+            if (nombreValidacion.length() > 30) {
+                throw new Exception("El nombre no puede superar los 30 caracteres.");
+            }
+
+            try {
+                capacidadValidacion = Integer.parseInt(capacidad.getText());
+            } catch (Exception ex) {
+                throw new Exception("Ingrese solo numeros en el campo de capacidad");
+            }
+            
+            if(capacidadValidacion < 0){
+                throw new Exception("Ingrese solo números positivos en el campo capacidad");
+            }
+            
+            try {
+                nivelValidacion = Double.parseDouble(nivelDificultad.getText());
+            } catch (Exception ex) {
+                throw new Exception("Ingrese solo numeros en el campo de nivel");
+            }
+            
+            if(nivelValidacion < 0.0 || nivelValidacion > 10.0 ){
+                throw new Exception("Ingrese solo un nivel en el rango 0.0 - 10.0");
+            }
+
+            int id = 0;
+
+            if (carrera == null) {
+                id = -1;
+            } else {
+                id = carrera.getIdCarrera();
+            }
+
+            carrera = new CarreraModel(id, nombre.getText(),
+                    Integer.parseInt(capacidad.getText()),
+                    Double.parseDouble(nivelDificultad.getText()),
+                    isBajoTecho.isSelected());
+
+            SaveDataController saveDataController = new SaveDataController();
+            saveDataController.saveDataCarrera(carrera);
+            MainView.updateTable();
+            dispose();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
         }
 
-        carrera = new CarreraModel(id, nombre.getText(),
-                Integer.parseInt(capacidad.getText()),
-                Double.parseDouble(nivelDificultad.getText()),
-                isBajoTecho.isSelected());
 
-        SaveDataController saveDataController = new SaveDataController();
-        saveDataController.saveDataCarrera(carrera);
-        MainView.updateTable();
-        dispose();
     }//GEN-LAST:event_guardarCarreraActionPerformed
 
     private void capacidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_capacidadActionPerformed

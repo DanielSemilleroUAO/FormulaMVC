@@ -9,8 +9,11 @@ import controllers.MainViewController;
 import controllers.SaveDataController;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import models.CarreraModel;
 import models.ParticipacionModel;
 import models.PilotoModel;
@@ -20,11 +23,11 @@ import models.PilotoModel;
  * @author delga
  */
 public class ParticipacionView extends javax.swing.JFrame {
-    
+
     ParticipacionModel participacion;
     ArrayList<PilotoModel> pilotos;
     ArrayList<CarreraModel> carreras;
-    
+
     /**
      * Creates new form ParticipacionView
      */
@@ -33,19 +36,19 @@ public class ParticipacionView extends javax.swing.JFrame {
         initComponents();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.setIconImage(getToolkit().getImage(getClass().getResource("/assets/icono_participacion.png")));
         this.setTitle("Crear Participación");
         MainViewController mainViewController = new MainViewController();
         carreras = mainViewController.loadComboBoxCarreras(listaCarreras);
         pilotos = mainViewController.loadComboBoxPilotos(listaPilotos);
-        
-        if(participacionModel != null){
+
+        if (participacionModel != null) {
             fecha.setText(participacionModel.getFecha());
             posicion.setText(String.valueOf(participacionModel.getPosicion()));
             int indexPiloto = 0;
             for (int i = 0; i < pilotos.size(); i++) {
-                if(pilotos.get(i).getNombre().equals(participacionModel.getPiloto().getNombre())){
+                if (pilotos.get(i).getNombre().equals(participacionModel.getPiloto().getNombre())) {
                     indexPiloto = i;
                     break;
                 }
@@ -53,14 +56,14 @@ public class ParticipacionView extends javax.swing.JFrame {
             listaPilotos.setSelectedIndex(indexPiloto);
             int indexCarrera = 0;
             for (int i = 0; i < carreras.size(); i++) {
-                if(carreras.get(i).getNombre().equals(participacionModel.getCarrera().getNombre())){
+                if (carreras.get(i).getNombre().equals(participacionModel.getCarrera().getNombre())) {
                     indexCarrera = i;
                     break;
                 }
             }
             listaCarreras.setSelectedIndex(indexCarrera);
         }
-        
+
     }
 
     @Override
@@ -68,8 +71,6 @@ public class ParticipacionView extends javax.swing.JFrame {
         MainView.isParticipacionOpen = false;
         super.dispose(); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -207,23 +208,48 @@ public class ParticipacionView extends javax.swing.JFrame {
 
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
         // TODO add your handling code here:
-        int id = 0;
-        if(participacion == null){
-            id = -1;
-        } else {
-            id = participacion.getIdParticipacion();
-        }
-        participacion = new ParticipacionModel(id,
+        try {
+            String fechaValidar = "";
+            int posicionValidar = 0;
+            
+            fechaValidar = fecha.getText();
+            try {
+                DateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                sdf.parse(fechaValidar);
+            } catch (Exception e) {
+                throw new Exception("Ingrese la fecha en el formato correcto yyyy-MM-dd hh:mm:ss");
+            }
+            
+            try {
+                posicionValidar = Integer.parseInt(posicion.getText());
+            } catch (Exception e) {
+                throw new Exception("Ingrese solo números en el campo posicion");
+            }
+
+            if (posicionValidar< 0) {
+                throw new Exception("Ingrese una posición valida > 0");
+            }
+            
+            int id = 0;
+            if (participacion == null) {
+                id = -1;
+            } else {
+                id = participacion.getIdParticipacion();
+            }
+            participacion = new ParticipacionModel(id,
                     fecha.getText(),
                     Integer.parseInt(posicion.getText()),
                     pilotos.get(listaPilotos.getSelectedIndex()),
                     pilotos.get(listaPilotos.getSelectedIndex()).getEscuderia(),
                     carreras.get(listaCarreras.getSelectedIndex()));
-        
-        SaveDataController saveDataController = new SaveDataController();
-        saveDataController.saveDataParticipacion(participacion);
-        MainView.updateTable();
-        dispose();
+
+            SaveDataController saveDataController = new SaveDataController();
+            saveDataController.saveDataParticipacion(participacion);
+            MainView.updateTable();
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
     }//GEN-LAST:event_guardarActionPerformed
 
     private void posicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_posicionActionPerformed

@@ -213,19 +213,70 @@ public class PilotoView extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        int opc = 1;
-        if (piloto == null) {
-            opc = -1;
-        }
-        piloto = new PilotoModel(Integer.parseInt(codigoPiloto.getText()),
-                nombre.getText(), Double.parseDouble(millasRecorridas.getText()),
-                Integer.parseInt(combustibleUsado.getText()),
-                escuderias.get(listaEscuderias.getSelectedIndex()));
+        try {
+            
+            int codigoPilotoValidar = 0;
+            String nombreValidar = "";
+            double millasValidar = 0.0;
+            int combustibleValidar = 0;
+            
+            try {
+                codigoPilotoValidar= Integer.parseInt(codigoPiloto.getText());
+            } catch (Exception e) {
+                throw new Exception("Ingrese solo números en el camp codigo piloto");
+            }
 
-        SaveDataController saveDataController = new SaveDataController();
-        saveDataController.saveDataPiloto(piloto, opc);
-        MainView.updateTable();
-        dispose();
+            if (codigoPilotoValidar < 0) {
+                throw new Exception("Ingrese un codigo de piloto valido > 0");
+            }
+            
+            //Dejar solo letras
+            nombreValidar = nombre.getText().replaceAll("[\\PL]", "");
+            nombre.setText(nombreValidar);
+            
+            if (nombreValidar.equals("") || nombreValidar.isEmpty()) {
+                throw new Exception("Por favor ingresar un nombre, el campo se encuentra sin diligenciar.");
+            }
+            if (nombreValidar.length() > 30) {
+                throw new Exception("El nombre no puede superar los 30 caracteres.");
+            }
+            
+            try {
+                millasValidar = Double.parseDouble(millasRecorridas.getText());
+            } catch (Exception e) {
+                throw new Exception("Ingrese solo números en el campo millas recorridas");
+            }
+
+            if (millasValidar < 0.0) {
+                throw new Exception("Ingrese una cantidad de milla recorridas validas > 0");
+            }
+            
+            try {
+                combustibleValidar = Integer.parseInt(combustibleUsado.getText());
+            } catch (Exception e) {
+                throw new Exception("Ingrese solo números en el campo combustible usado");
+            }
+
+            if (combustibleValidar < 0) {
+                throw new Exception("Ingrese un consumo de combustible valido > 0");
+            }
+            
+            int opc = 1;
+            if (piloto == null) {
+                opc = -1;
+            }
+            piloto = new PilotoModel(Integer.parseInt(codigoPiloto.getText()),
+                    nombre.getText(), Double.parseDouble(millasRecorridas.getText()),
+                    Integer.parseInt(combustibleUsado.getText()),
+                    escuderias.get(listaEscuderias.getSelectedIndex()));
+
+            SaveDataController saveDataController = new SaveDataController();
+            saveDataController.saveDataPiloto(piloto, opc);
+            MainView.updateTable();
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void millasRecorridasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_millasRecorridasActionPerformed

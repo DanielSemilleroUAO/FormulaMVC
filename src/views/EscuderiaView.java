@@ -8,7 +8,10 @@ package views;
 import controllers.SaveDataController;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import models.EscuderiaModel;
 
 /**
@@ -16,9 +19,9 @@ import models.EscuderiaModel;
  * @author delga
  */
 public class EscuderiaView extends javax.swing.JFrame {
-     
+
     EscuderiaModel escuderia;
-    
+
     /**
      * Creates new form EscuderiaView
      */
@@ -27,18 +30,18 @@ public class EscuderiaView extends javax.swing.JFrame {
         initComponents();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.setIconImage(getToolkit().getImage(getClass().getResource("/assets/icono_escuderia.png")));
         this.setTitle("Crear Escuderia");
-        
-        if(escuderiaModel != null){
+
+        if (escuderiaModel != null) {
             codigoEscuderia.setText(String.valueOf(escuderiaModel.getCodigoEscuderia()));
             nombreEscuderia.setText(escuderiaModel.getNombre());
             patrocinador.setText(escuderiaModel.getPatrocinador());
             carrerasGanadas.setText(String.valueOf(escuderiaModel.getCarrerasGanadas()));
             fechaIngreso.setText(escuderiaModel.getFechaIngreso());
         }
-        
+
     }
 
     @Override
@@ -46,8 +49,6 @@ public class EscuderiaView extends javax.swing.JFrame {
         MainView.isEscuderiaOpen = false;
         super.dispose(); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -188,21 +189,81 @@ public class EscuderiaView extends javax.swing.JFrame {
 
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
         // TODO add your handling code here:
-        int opc = 1;
-        if(escuderia == null){
-            opc = -1;
-        } 
-        escuderia = new EscuderiaModel(
+        try {
+            int codigoEscuderiaValidar = 0;
+            String nombreValidar = "";
+            String patrocinadorValidar = "";
+            int carrerasGanadarValidar = 0;
+            String fechaIngresoValidar = "";
+
+            try {
+                codigoEscuderiaValidar = Integer.parseInt(codigoEscuderia.getText());
+            } catch (Exception e) {
+                throw new Exception("Ingrese solo números en el campo codigo escuderia.");
+            }
+
+            if (codigoEscuderiaValidar <= 0) {
+                throw new Exception("Ingrese un código validos > 0");
+            }
+            
+            //Dejar solo letras
+            nombreValidar = nombreEscuderia.getText().replaceAll("[\\PL]", "");
+            nombreEscuderia.setText(nombreValidar);
+            
+            if (nombreValidar.equals("") || nombreValidar.isEmpty()) {
+                throw new Exception("Por favor ingresar un nombre, el campo se encuentra sin diligenciar.");
+            }
+            if (nombreValidar.length() > 30) {
+                throw new Exception("El nombre no puede superar los 30 caracteres.");
+            }
+            
+            //Dejar solo numeros
+            patrocinadorValidar = patrocinador.getText().replaceAll("[\\PL]", "");
+            patrocinador.setText(patrocinadorValidar);
+            
+            if (patrocinadorValidar.equals("") || patrocinadorValidar.isEmpty()) {
+                throw new Exception("Por favor ingresar un patrocinador, el campo se encuentra sin diligenciar.");
+            }
+            if (patrocinadorValidar.length() > 30) {
+                throw new Exception("El patrocinador no puede superar los 30 caracteres.");
+            }
+            
+            try {
+                carrerasGanadarValidar = Integer.parseInt(carrerasGanadas.getText());
+            } catch (Exception e) {
+                throw new Exception("Ingrese solo números en el campo carreras ganadas.");
+            }
+
+            if (carrerasGanadarValidar < 0) {
+                throw new Exception("Ingrese un número de carreras ganadas validos > 0");
+            }
+
+            fechaIngresoValidar = fechaIngreso.getText();
+            try {
+                DateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+                sdf.parse(fechaIngresoValidar);
+            } catch (Exception e) {
+                throw new Exception("Ingrese la fecha en el formato correcto yyyy-MM-dd");
+            }
+
+            int opc = 1;
+            if (escuderia == null) {
+                opc = -1;
+            }
+            escuderia = new EscuderiaModel(
                     Integer.parseInt(codigoEscuderia.getText()),
-                    nombreEscuderia.getText(), 
+                    nombreEscuderia.getText(),
                     patrocinador.getText(),
                     Integer.parseInt(carrerasGanadas.getText()),
                     fechaIngreso.getText());
-        
-        SaveDataController saveDataController = new SaveDataController();
-        saveDataController.saveDataEscuderia(escuderia, opc);
-        MainView.updateTable();
-        dispose();
+
+            SaveDataController saveDataController = new SaveDataController();
+            saveDataController.saveDataEscuderia(escuderia, opc);
+            MainView.updateTable();
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
     }//GEN-LAST:event_guardarActionPerformed
 
 
