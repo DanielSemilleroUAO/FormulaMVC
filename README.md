@@ -10,16 +10,16 @@ Diseño de la bd
 
 ## Tabla carrera
 
-![imagen](images/Tabla_carrera.png)
+![imagen](images/Tabla_carrera.PNG)
 
 ## Tabla escuderia
 
-![imagen](images/tabla_escuderia.png)
+![imagen](images/tabla_escuderia.PNG)
 
 ## Tabla participacion
 
-![imagen](images/tabla_participacion.png)
+![imagen](images/tabla_participacion.PNG)
 
 ## Tabla piloto
 
-![imagen](images/tabla_piloto.png)
+![imagen](images/tabla_piloto.PNG)
