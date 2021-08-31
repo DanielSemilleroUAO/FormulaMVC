@@ -20,45 +20,46 @@ import utils.ConnectionDB;
  */
 public class CarreraDAO extends ConnectionDB {
     
-    public CarreraModel findCarreraByID(int id) {
-        CarreraModel carrera = null;
+    public ArrayList<CarreraModel> findCarreraByID(int id) {
+        ArrayList<CarreraModel> carreras = new ArrayList<>();
         try {
             String sql = "SELECT * from carrera WHERE id_carrera = ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                carrera = new CarreraModel(result.getInt(1), result.getString(2), result.getInt(3), result.getDouble(4), result.getBoolean(5));
+                CarreraModel carrera = new CarreraModel(result.getInt(1), result.getString(2), result.getInt(3), result.getDouble(4), result.getBoolean(5));
+                carreras.add(carrera);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
                     + "\nError :" + ex.getMessage());
         }
-        return carrera;
+        return carreras;
     }
     
-    public CarreraModel findCarreraByName(String name) {
-        CarreraModel carrera = null;
+    public ArrayList<CarreraModel> findCarreraByName(String name) {
+        ArrayList<CarreraModel> carreras = new ArrayList<>();
         try {
-            String sql = "SELECT * from carrera WHERE nombre LIKE ? LIMIT 1;";
+            String sql = "SELECT * from carrera WHERE nombre LIKE ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setString(1, "%"+name+"%");
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                carrera = new CarreraModel(result.getInt(1), result.getString(2), result.getInt(3), result.getDouble(4), result.getBoolean(5));
+                CarreraModel carrera = new CarreraModel(result.getInt(1), result.getString(2), result.getInt(3), result.getDouble(4), result.getBoolean(5));
+                carreras.add(carrera);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
                     + "\nError :" + ex.getMessage());
         }
-        return carrera;
+        return carreras;
     }
     
     public ArrayList<CarreraModel> findAll() {
         ArrayList<CarreraModel> carreras = new ArrayList();
         try {
-            String sql = "SELECT *\n"
-                    + "FROM carrera order by carrera.nombre asc;\n";
+            String sql = "SELECT * FROM carrera order by carrera.nombre asc;";
             ResultSet result = getConnection().createStatement().executeQuery(sql);
             while (result.next()) {
                 CarreraModel carrera = new CarreraModel(result.getInt(1), result.getString(2), result.getInt(3), result.getDouble(4), result.getBoolean(5));
@@ -104,15 +105,18 @@ public class CarreraDAO extends ConnectionDB {
         }
     }
     
-    public void updateCarreraById(int id, CarreraModel carrera) {
+    public void updateCarreraById(CarreraModel carrera) {
         try {
             String sql = "UPDATE carrera SET nombre = ?, capacidad = ?, nivel_dificultad = ?, corre_techo = ? WHERE id_carrera = ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
-            statement.setInt(1, 0);
-            statement.setString(0, sql);
+            statement.setString(1, carrera.getNombre());
+            statement.setInt(2, carrera.getCapacidad());
+            statement.setDouble(3, carrera.getNivelDificultad());
+            statement.setBoolean(4, carrera.isIsTecho());
+            statement.setInt(5, carrera.getIdCarrera());
             int rowInserted = statement.executeUpdate();
             if (rowInserted > 0) {
-                System.out.println("Carrera insertado");
+                System.out.println("Carrera actualizado");
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
@@ -122,12 +126,7 @@ public class CarreraDAO extends ConnectionDB {
     
     public static void main(String[] args) {
         CarreraDAO carreraDAO = new CarreraDAO();
-        CarreraModel carrera = carreraDAO.findCarreraByName("Z");
-        if(carrera != null){
-            System.out.println(carrera.toString());
-        } else {
-            System.err.println("No existe");
-        }
+        
     }
     
 }

@@ -6,6 +6,9 @@
 package controllers;
 
 import access.CarreraDAO;
+import access.EscuderiaDAO;
+import access.PilotoDAO;
+import access.ParticipacionDAO;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,20 +63,23 @@ class ButtonEditor extends DefaultCellEditor {
                 } else {
                     switch (opc) {
                         case 0:
-                            
+                            EscuderiaDAO escuderiaDAO = new EscuderiaDAO();
+                            escuderiaDAO.deleteEscuderiaByCodigo(MainViewController.escuderiaModels.get(id).getCodigoEscuderia());
                             break;
                         case 1:
-
+                            PilotoDAO pilotoDAO = new PilotoDAO();
+                            pilotoDAO.deletePilotoByCodigo(MainViewController.pilotoModels.get(id).getCodigoPiloto());
                             break;
                         case 2:
+                            ParticipacionDAO participacionDAO = new ParticipacionDAO();
+                            participacionDAO.deleteParticipacionById(MainViewController.participacionModels.get(id).getIdParticipacion());
                             break;
                         case 3:
                             CarreraDAO carreraDAO = new CarreraDAO();
                             carreraDAO.deleteCarreraById(MainViewController.carreraModels.get(id).getIdCarrera());
-                            MainView.updateTable();
                             break;
                     }
-
+                    MainView.updateTable();
                 }
             }
         });

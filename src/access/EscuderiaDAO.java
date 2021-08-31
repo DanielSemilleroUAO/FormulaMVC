@@ -21,25 +21,64 @@ import static utils.ConnectionDB.getConnection;
  */
 public class EscuderiaDAO {
 
-    public EscuderiaModel findEscuderiaByCodigo(int id) {
-        EscuderiaModel escuderia = null;
+    public ArrayList<EscuderiaModel> findEscuderiaByCodigo(int id) {
+        ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
         try {
             String sql = "SELECT * from escuderia WHERE codigo_escuderia = ?;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                escuderia = new EscuderiaModel();
+                EscuderiaModel escuderia = new EscuderiaModel(result.getInt(1),
+                        result.getString(2), result.getString(3),
+                        result.getInt(4), result.getString(5));
+                escuderias.add(escuderia);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
                     + "\nError :" + ex.getMessage());
         }
-        return escuderia;
+        return escuderias;
     }
 
-    public EscuderiaModel findEscuderiaByName(String name) {
-        return null;
+    public ArrayList<EscuderiaModel> findEscuderiaByName(String name) {
+        ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
+        try {
+            String sql = "SELECT * from escuderia WHERE nombre LIKE ?;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setString(1, "%" + name + "%");
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                EscuderiaModel escuderia = new EscuderiaModel(result.getInt(1),
+                        result.getString(2), result.getString(3),
+                        result.getInt(4), result.getString(5));
+                escuderias.add(escuderia);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
+        return escuderias;
+    }
+
+    public ArrayList<EscuderiaModel> findEscuderiaByPatrocinador(String name) {
+        ArrayList<EscuderiaModel> escuderias = new ArrayList<>();
+        try {
+            String sql = "SELECT * from escuderia WHERE patrocinador LIKE ?;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setString(1, "%" + name + "%");
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                EscuderiaModel escuderia = new EscuderiaModel(result.getInt(1),
+                        result.getString(2), result.getString(3),
+                        result.getInt(4), result.getString(5));
+                escuderias.add(escuderia);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
+        return escuderias;
     }
 
     public ArrayList<EscuderiaModel> findAll() {
@@ -49,11 +88,10 @@ public class EscuderiaDAO {
                     + "FROM escuderia order by escuderia.nombre asc;\n";
             ResultSet result = getConnection().createStatement().executeQuery(sql);
             while (result.next()) {
-                EscuderiaModel escuderia = new EscuderiaModel(result.getInt(1), 
-                        result.getString(2), result.getString(3), 
+                EscuderiaModel escuderia = new EscuderiaModel(result.getInt(1),
+                        result.getString(2), result.getString(3),
                         result.getInt(4), result.getString(5));
-                //CarreraModel carrera = new CarreraModel(result.getInt(1), result.getString(2), result.getInt(3), result.getDouble(4), result.getBoolean(5));
-               escuderias.add(escuderia);
+                escuderias.add(escuderia);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
@@ -63,21 +101,66 @@ public class EscuderiaDAO {
     }
 
     public void createEscuderia(EscuderiaModel escuderia) {
+        try {
+            String sql = "INSERT INTO escuderia(codigo_escuderia, nombre, patrocinador, carreras_ganadas, fecha_ingreso) VALUES (?,?,?,?,?);";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setInt(1, escuderia.getCodigoEscuderia());
+            statement.setString(2, escuderia.getNombre());
+            statement.setString(3, escuderia.getPatrocinador());
+            statement.setInt(4, escuderia.getCarrerasGanadas());
+            statement.setString(5, escuderia.getFechaIngreso());
+            int rowInserted = statement.executeUpdate();
+            if (rowInserted > 0) {
+                System.out.println("Carrera insertado");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
     }
 
     public void deleteEscuderiaByCodigo(int id) {
+        try {
+            String sql = "DELETE FROM escuderia WHERE codigo_escuderia = ?;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setInt(1, id);
+            int rowInserted = statement.executeUpdate();
+            if (rowInserted > 0) {
+                System.out.println("Eliminado Escuderia");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
     }
 
-    public void updateEscuderiaById(int id, EscuderiaModel escuderia) {
+    public void updateEscuderiaById(EscuderiaModel escuderia) {
+        try {
+            String sql = "UPDATE escuderia SET codigo_escuderia = ?, nombre = ?, patrocinador = ?, carreras_ganadas = ?, fecha_ingreso = ? WHERE codigo_escuderia = ?;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setInt(1, escuderia.getCodigoEscuderia());
+            statement.setString(2, escuderia.getNombre());
+            statement.setString(3, escuderia.getPatrocinador());
+            statement.setInt(4, escuderia.getCarrerasGanadas());
+            statement.setString(5, escuderia.getFechaIngreso());
+            statement.setInt(6, escuderia.getCodigoEscuderia());
+            int rowInserted = statement.executeUpdate();
+            if (rowInserted > 0) {
+                System.out.println("Carrera actualizado");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
     }
-    
+
     public static void main(String[] args) {
         EscuderiaDAO escuderiaDAO = new EscuderiaDAO();
         ArrayList<EscuderiaModel> escuderias = escuderiaDAO.findAll();
         for (EscuderiaModel escuderia : escuderias) {
             System.out.println(escuderia.toString());
         }
-        
+
     }
 
 }

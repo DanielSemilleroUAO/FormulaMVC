@@ -23,16 +23,10 @@ import javax.swing.table.TableCellRenderer;
  */
 public class MainView extends javax.swing.JFrame {
 
-    CarreraView carreraView = new CarreraView(null);
-    EscuderiaView escuderiaView = new EscuderiaView(null);
-    ParticipacionView participacionView = new ParticipacionView(null);
-    PilotoView pilotoView = new PilotoView(null);
-
     public static boolean isCarreraOpen = false;
     public static boolean isEscuderiaOpen = false;
     public static boolean isParticipacionOpen = false;
     public static boolean isPilotoOpen = false;
-    
 
     public static MainViewController mainViewController = new MainViewController();
 
@@ -45,10 +39,11 @@ public class MainView extends javax.swing.JFrame {
         this.setTitle("Formula Tapitas");
         mainViewController.loadDataTabSelected(tablaDatos, 0);
     }
-    
-    public static void updateTable(){
+
+    public static void updateTable() {
         mainViewController.loadDataTabSelected(tablaDatos, tablaSeleccionada.getSelectedIndex());
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -68,7 +63,7 @@ public class MainView extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         filtrosSeleccionada = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        buscar = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -128,8 +123,13 @@ public class MainView extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setText("Search: ");
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jTextField1.setToolTipText("Ingresa tu parametro");
+        buscar.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        buscar.setToolTipText("Ingresa tu parametro");
+        buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarActionPerformed(evt);
+            }
+        });
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -160,7 +160,7 @@ public class MainView extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1)))
+                        .addComponent(buscar)))
                 .addGap(50, 50, 50))
         );
         jPanel3Layout.setVerticalGroup(
@@ -174,7 +174,7 @@ public class MainView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,7 +326,7 @@ public class MainView extends javax.swing.JFrame {
                 break;
             case 2:
                 //Participacion
-                filtrosSeleccionada.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"fecha", "nombre piloto", "nombre carrera"}));
+                filtrosSeleccionada.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"nombre piloto", "nombre carrera"}));
                 break;
             case 3:
                 //Carrera
@@ -340,6 +340,8 @@ public class MainView extends javax.swing.JFrame {
 
     private void crearCarreraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearCarreraActionPerformed
         // TODO add your handling code here:
+        CarreraView carreraView = new CarreraView(null);
+
         if (!isCarreraOpen) {
             carreraView.setVisible(true);
             isCarreraOpen = true;
@@ -350,6 +352,8 @@ public class MainView extends javax.swing.JFrame {
 
     private void crearPilotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearPilotoActionPerformed
         // TODO add your handling code here:
+
+        PilotoView pilotoView = new PilotoView(null);
         if (!isPilotoOpen) {
             pilotoView.setVisible(true);
             isPilotoOpen = true;
@@ -360,6 +364,8 @@ public class MainView extends javax.swing.JFrame {
 
     private void crearEscuderiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearEscuderiaActionPerformed
         // TODO add your handling code here:
+        EscuderiaView escuderiaView = new EscuderiaView(null);
+
         if (!isEscuderiaOpen) {
             escuderiaView.setVisible(true);
             isEscuderiaOpen = true;
@@ -370,6 +376,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void crearParticipacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearParticipacionActionPerformed
         // TODO add your handling code here:
+        ParticipacionView participacionView = new ParticipacionView(null);
         if (!isParticipacionOpen) {
             participacionView.setVisible(true);
             isParticipacionOpen = true;
@@ -381,6 +388,12 @@ public class MainView extends javax.swing.JFrame {
     private void filtrosSeleccionadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtrosSeleccionadaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_filtrosSeleccionadaActionPerformed
+
+    private void buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarActionPerformed
+        // TODO add your handling code here:
+        mainViewController.executeFilter(tablaDatos, tablaSeleccionada.getSelectedIndex(), filtrosSeleccionada.getSelectedIndex(), buscar.getText());
+        System.out.println(buscar.getText());
+    }//GEN-LAST:event_buscarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -421,6 +434,7 @@ public class MainView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField buscar;
     private javax.swing.JButton crearCarrera;
     private javax.swing.JButton crearEscuderia;
     private javax.swing.JButton crearParticipacion;
@@ -439,7 +453,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private static javax.swing.JTable tablaDatos;
     private static javax.swing.JComboBox<String> tablaSeleccionada;
     // End of variables declaration//GEN-END:variables

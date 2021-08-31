@@ -11,6 +11,7 @@ package models;
  */
 public class ParticipacionModel {
     
+    private int idParticipacion;
     private String fecha;
     private int posicion;
     private PilotoModel piloto;
@@ -20,6 +21,15 @@ public class ParticipacionModel {
     public ParticipacionModel() {
     }
 
+    public ParticipacionModel(int idParticipacion, String fecha, int posicion, PilotoModel piloto, EscuderiaModel escuderia, CarreraModel carrera) {
+        this.idParticipacion = idParticipacion;
+        this.fecha = fecha;
+        this.posicion = posicion;
+        this.piloto = piloto;
+        this.escuderia = escuderia;
+        this.carrera = carrera;
+    }
+    
     public ParticipacionModel(String fecha, int posicion, PilotoModel piloto, EscuderiaModel escuderia, CarreraModel carrera) {
         this.fecha = fecha;
         this.posicion = posicion;
@@ -67,6 +77,15 @@ public class ParticipacionModel {
     public void setCarrera(CarreraModel carrera) {
         this.carrera = carrera;
     }
+
+    public int getIdParticipacion() {
+        return idParticipacion;
+    }
+
+    public void setIdParticipacion(int idParticipacion) {
+        this.idParticipacion = idParticipacion;
+    }
+    
 
     @Override
     public String toString() {

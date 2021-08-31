@@ -18,7 +18,7 @@ import models.CarreraModel;
 public class CarreraView extends javax.swing.JFrame {
 
     CarreraModel carrera;
-    
+
     /**
      * Creates new form CarreraView
      */
@@ -27,17 +27,22 @@ public class CarreraView extends javax.swing.JFrame {
         initComponents();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         this.setIconImage(getToolkit().getImage(getClass().getResource("/assets/icono_carrera.png")));
         this.setTitle("Crear Carrera");
-        
-        if(carrera != null){
+
+        if (carrera != null) {
             nombre.setText(carreraModel.getNombre());
             capacidad.setText(String.valueOf(carreraModel.getCapacidad()));
             nivelDificultad.setText(String.valueOf(carreraModel.getNivelDificultad()));
             isBajoTecho.setSelected(carreraModel.isIsTecho());
+        } else {
+            nombre.setText("");
+            capacidad.setText("");
+            nivelDificultad.setText("");
+            isBajoTecho.setSelected(false);
         }
-        
+
     }
 
     @Override
@@ -45,8 +50,6 @@ public class CarreraView extends javax.swing.JFrame {
         MainView.isCarreraOpen = false;
         super.dispose(); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -192,15 +195,19 @@ public class CarreraView extends javax.swing.JFrame {
 
     private void guardarCarreraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarCarreraActionPerformed
         // TODO add your handling code here:
-        if(carrera == null){
-            carrera = new CarreraModel(-1, nombre.getText(), 
-                    Integer.parseInt(capacidad.getText()),
-                    Double.parseDouble(nivelDificultad.getText()),
-                    isBajoTecho.isSelected());
-        } else {
-            carrera.setNombre(nombre.getText());
-           
+        int id = 0;
+        
+        if (carrera == null) {
+            id = -1;
+        }else {
+            id = carrera.getIdCarrera();
         }
+
+        carrera = new CarreraModel(id, nombre.getText(),
+                Integer.parseInt(capacidad.getText()),
+                Double.parseDouble(nivelDificultad.getText()),
+                isBajoTecho.isSelected());
+
         SaveDataController saveDataController = new SaveDataController();
         saveDataController.saveDataCarrera(carrera);
         MainView.updateTable();

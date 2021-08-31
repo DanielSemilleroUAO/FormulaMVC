@@ -23,20 +23,25 @@ import static utils.ConnectionDB.getConnection;
  */
 public class ParticipacionDAO {
 
-    public ArrayList<ParticipacionModel> findParticipacionByCodigoPiloto(int codigoPiloto) {
+    public ArrayList<ParticipacionModel> findParticipacionByNamePiloto(String nombre) {
         ArrayList<ParticipacionModel> participaciones = new ArrayList<>();
         try {
-            String sql = "SELECT carrera.nombre, carrera.corre_techo, "
-                    + "carrera.nivel_dificultad, piloto.nombre, "
-                    + "participacion.posicion FROM participacion "
-                    + "INNER JOIN carrera ON participacion.id_carrera_fk = carrera.id_carrera "
-                    + "INNER JOIN piloto ON participacion.codigo_piloto_fk = piloto.codigo_piloto "
-                    + "WHERE piloto.codigo_piloto = ? ORDER BY carrera.nombre ASC;";
+            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
+                    + "inner join piloto on participacion.codigo_piloto_fk = piloto.codigo_piloto "
+                    + "inner join carrera on participacion.id_carrera_fk = carrera.id_carrera "
+                    + "inner join escuderia on piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
+                    + "where piloto.nombre LIKE ? "
+                    + "ORDER BY carrera.nombre asc;";
             PreparedStatement statement = getConnection().prepareStatement(sql);
-            statement.setInt(1, codigoPiloto);
+            statement.setString(1, "%" + nombre + "%");
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                ParticipacionModel participacion = new ParticipacionModel();
+                ParticipacionModel participacion
+                        = new ParticipacionModel(result.getInt(6), result.getString(5), result.getInt(4),
+                                new PilotoModel(result.getString(2)),
+                                new EscuderiaModel(result.getString(3)),
+                                new CarreraModel(result.getString(1)));
+                participaciones.add(participacion);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
@@ -45,24 +50,47 @@ public class ParticipacionDAO {
         return participaciones;
     }
 
-    public ArrayList<ParticipacionModel> findParticipacionByIdCarrera(int idCarrera) {
-        return null;
+    public ArrayList<ParticipacionModel> findParticipacionByNameCarrera(String nombre) {
+        ArrayList<ParticipacionModel> participaciones = new ArrayList<>();
+        try {
+            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
+                    + "inner join piloto on participacion.codigo_piloto_fk = piloto.codigo_piloto "
+                    + "inner join carrera on participacion.id_carrera_fk = carrera.id_carrera "
+                    + "inner join escuderia on piloto.codigo_escuderia_fk = escuderia.codigo_escuderia "
+                    + "where carrera.nombre like ? "
+                    + "ORDER BY carrera.nombre asc;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setString(1, "%" + nombre + "%");
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                ParticipacionModel participacion
+                        = new ParticipacionModel(result.getInt(6), result.getString(5), result.getInt(4),
+                                new PilotoModel(result.getString(2)),
+                                new EscuderiaModel(result.getString(3)),
+                                new CarreraModel(result.getString(1)));
+                participaciones.add(participacion);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
+        return participaciones;
     }
 
     public ArrayList<ParticipacionModel> findAll() {
         ArrayList<ParticipacionModel> participaciones = new ArrayList<>();
         try {
-            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha from participacion "
+            String sql = "select carrera.nombre, piloto.nombre, escuderia.nombre, participacion.posicion, participacion.fecha, participacion.id_participacion from participacion "
                     + "inner join piloto on participacion.codigo_piloto_fk = piloto.codigo_piloto "
                     + "inner join carrera on participacion.id_carrera_fk = carrera.id_carrera "
                     + "inner join escuderia on piloto.codigo_escuderia_fk = escuderia.codigo_escuderia ORDER BY carrera.nombre asc;";
             ResultSet result = getConnection().createStatement().executeQuery(sql);
             while (result.next()) {
-                ParticipacionModel participacion = 
-                        new ParticipacionModel(result.getString(5), result.getInt(4),
-                        new PilotoModel(result.getString(2)),
-                        new EscuderiaModel(result.getString(3)),
-                        new CarreraModel(result.getString(1)));
+                ParticipacionModel participacion
+                        = new ParticipacionModel(result.getInt(6), result.getString(5), result.getInt(4),
+                                new PilotoModel(result.getString(2)),
+                                new EscuderiaModel(result.getString(3)),
+                                new CarreraModel(result.getString(1)));
                 participaciones.add(participacion);
             }
         } catch (SQLException ex) {
@@ -73,12 +101,65 @@ public class ParticipacionDAO {
     }
 
     public void createParticipacion(ParticipacionModel participacion) {
+        try {
+            String sql = "INSERT INTO participacion(fecha, posicion, codigo_piloto_fk, id_carrera_fk) VALUES (?,?,?,?);";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setString(1, participacion.getFecha());
+            statement.setInt(2, participacion.getPosicion());
+            statement.setInt(3, participacion.getPiloto().getCodigoPiloto());
+            statement.setInt(4, participacion.getCarrera().getIdCarrera());
+            int rowInserted = statement.executeUpdate();
+            if (rowInserted > 0) {
+                System.out.println("Participacion insertado");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
     }
 
     public void deleteParticipacionById(int id) {
+        try {
+            String sql = "DELETE FROM participacion WHERE id_participacion = ?;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setInt(1, id);
+            int rowInserted = statement.executeUpdate();
+            if (rowInserted > 0) {
+                System.out.println("Eliminado Participacion");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
     }
 
-    public void updateParticipacionById(int id, ParticipacionModel participacion) {
+    public void updateParticipacionById(ParticipacionModel participacion) {
+        try {
+            System.out.println(participacion.getIdParticipacion());
+            String sql = "UPDATE participacion SET fecha = ?, posicion = ?, codigo_piloto_fk = ?, id_carrera_fk = ? WHERE id_participacion = ?;";
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+            statement.setString(1, participacion.getFecha());
+            statement.setInt(2, participacion.getPosicion());
+            statement.setInt(3, participacion.getPiloto().getCodigoPiloto());
+            statement.setInt(4, participacion.getCarrera().getIdCarrera());
+            statement.setInt(5, participacion.getIdParticipacion());
+            int rowInserted = statement.executeUpdate();
+            if (rowInserted > 0) {
+                System.out.println("Participacion actualizado");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Código : " + ex.getErrorCode()
+                    + "\nError :" + ex.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        EscuderiaDAO escuderiaDAO = new EscuderiaDAO();
+        ArrayList<EscuderiaModel> escuderias = escuderiaDAO.findAll();
+        for (EscuderiaModel escuderia : escuderias) {
+            System.out.println(escuderia.toString());
+        }
+
     }
 
 }
