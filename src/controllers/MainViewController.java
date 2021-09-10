@@ -54,7 +54,44 @@ public class MainViewController {
     public void loadDataTabSelected(JTable tabla, int tablaSelected) {
 
         Object[] headers;
-        DefaultTableModel tableModel = new DefaultTableModel();
+        DefaultTableModel tableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+
+                switch (tablaSelected) {
+                    case 0:
+                        if (column == 5 || column == 6) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    case 1:
+                        if (column == 5 || column == 4) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    case 2:
+                        if (column == 5 || column == 6) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    case 3:
+                        if (column == 5 || column == 4) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    default:
+                        if (column == 5 || column == 6) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                }
+            }
+        };
 
         tabla.removeAll();
         //Se colocan los titulos
@@ -127,7 +164,44 @@ public class MainViewController {
     public void executeFilter(JTable tabla, int tablaSelected, int filterSelected, String dataSearch) {
 
         Object[] headers;
-        DefaultTableModel tableModel = new DefaultTableModel();
+        DefaultTableModel tableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+
+                switch (tablaSelected) {
+                    case 0:
+                        if (column == 5 || column == 6) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    case 1:
+                        if (column == 5 || column == 4) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    case 2:
+                        if (column == 5 || column == 6) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    case 3:
+                        if (column == 5 || column == 4) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    default:
+                        if (column == 5 || column == 6) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                }
+            }
+        };
 
         tabla.removeAll();
         //Se colocan los titulos
@@ -228,12 +302,12 @@ public class MainViewController {
                 "Eliminar").setCellEditor(new ButtonEditor(new JCheckBox(), tablaSelected));
 
     }
-    
+
     /**
      * Carga los datos al ComboBox para mostrar todas las escuderías disponibles
-     * 
+     *
      * @param comboBox
-     * @return 
+     * @return
      */
     public ArrayList<EscuderiaModel> loadComboBoxEscuderia(JComboBox comboBox) {
         ArrayList<EscuderiaModel> escuderias = escuderiaDAO.findAll();
@@ -244,12 +318,12 @@ public class MainViewController {
         comboBox.setModel(new DefaultComboBoxModel<>(data));
         return escuderias;
     }
-    
+
     /**
      * Carga los datos al ComboBox para mostrar todos los pilotos disponibles
-     * 
+     *
      * @param comboBox
-     * @return 
+     * @return
      */
     public ArrayList<PilotoModel> loadComboBoxPilotos(JComboBox comboBox) {
         ArrayList<PilotoModel> pilotos = pilotoDAO.findAll();
@@ -260,12 +334,12 @@ public class MainViewController {
         comboBox.setModel(new DefaultComboBoxModel<>(data));
         return pilotos;
     }
-    
+
     /**
      * Carga los datos al ComboBox para mostrar todos las carreras disponibles
-     * 
+     *
      * @param comboBox
-     * @return 
+     * @return
      */
     public ArrayList<CarreraModel> loadComboBoxCarreras(JComboBox comboBox) {
         ArrayList<CarreraModel> carreras = carreraDAO.findAll();
